@@ -28,7 +28,7 @@ const initialProducts: Product[] = [
 ];
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>(() => {
+const [products, setProducts] = useState<Product[]>(() => {
   if (typeof window === "undefined") return initialProducts;
 
   try {
@@ -38,7 +38,28 @@ export default function Home() {
     return initialProducts;
   }
 });
+
+const [sales, setSales] = useState<Sale[]>(() => {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const saved = localStorage.getItem("samo_sales");
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+});
+
 useEffect(() => {
+  localStorage.setItem("samo_products", JSON.stringify(products));
+}, [products]);
+
+useEffect(() => {
+  localStorage.setItem("samo_sales", JSON.stringify(sales));
+}, [sales]);
+
+const [selectedProduct, setSelectedProduct] = useState<number>(1);
+const [saleQuantity, setSaleQuantity] = useState<number>(1);
   localStorage.setItem("samo_products", JSON.stringify(products));
 }, [products]);
 
