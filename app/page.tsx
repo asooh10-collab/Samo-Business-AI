@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Product = {
   id: number;
@@ -28,8 +28,33 @@ const initialProducts: Product[] = [
 ];
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
-  const [sales, setSales] = useState<Sale[]>([]);
+  const [products, setProducts] = useState<Product[]>(() => {
+  if (typeof window === "undefined") return initialProducts;
+
+  try {
+    const saved = localStorage.getItem("samo_products");
+    return saved ? JSON.parse(saved) : initialProducts;
+  } catch {
+    return initialProducts;
+  }
+});
+useEffect(() => {
+  localStorage.setItem("samo_products", JSON.stringify(products));
+}, [products]);
+
+useEffect(() => {
+  localStorage.setItem("samo_sales", JSON.stringify(sales));
+}, [sales]);
+const [sales, setSales] = useState<Sale[]>(() => {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const saved = localStorage.getItem("samo_sales");
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+});
 
   const [selectedProduct, setSelectedProduct] = useState<number>(1);
   const [saleQuantity, setSaleQuantity] = useState<number>(1);
