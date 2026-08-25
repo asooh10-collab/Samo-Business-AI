@@ -1,5 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
+import AutoBackup from "./components/AutoBackup";
 
 export const metadata: Metadata = {
   title: "SAMO Business AI",
@@ -13,7 +14,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body>{children}</body>
+      <body>
+        <AutoBackup />
+        {children}
+      </body>
     </html>
   );
 }
