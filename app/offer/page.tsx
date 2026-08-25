@@ -1,8 +1,85 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
+type Product = {
+  id: number;
+  name: string;
+  cost: number;
+  price: number;
+  quantity: number;
+};
+
+type Sale = {
+  id?: number;
+  productId?: number;
+  productName?: string;
+  quantity?: number;
+  total?: number;
+  totalSale?: number;
+  profit?: number;
+  date?: string;
+};
+
 export default function OfferPage() {
+  const [sales, setSales] = useState(0);
+  const [profit, setProfit] = useState(0);
+  const [inventory, setInventory] = useState(0);
+  const [productsCount, setProductsCount] = useState(0);
+
+  useEffect(() => {
+    try {
+      const productsRaw = localStorage.getItem("samo_products");
+      const salesRaw = localStorage.getItem("samo_sales");
+
+      const products: Product[] = productsRaw
+        ? JSON.parse(productsRaw)
+        : [];
+
+      const salesData: Sale[] = salesRaw
+        ? JSON.parse(salesRaw)
+        : [];
+
+      // إجمالي قيمة المخزون
+      const inventoryValue = products.reduce(
+        (sum, product) =>
+          sum + Number(product.cost || 0) * Number(product.quantity || 0),
+        0
+      );
+
+      // إجمالي المبيعات
+      const totalSales = salesData.reduce((sum, sale) => {
+        const value =
+          sale.total ??
+          sale.totalSale ??
+          0;
+
+        return sum + Number(value);
+      }, 0);
+
+      // إجمالي الأرباح
+      const totalProfit = salesData.reduce((sum, sale) => {
+        return sum + Number(sale.profit || 0);
+      }, 0);
+
+      setInventory(inventoryValue);
+      setSales(totalSales);
+      setProfit(totalProfit);
+      setProductsCount(products.length);
+    } catch (error) {
+      console.error("SAMO data error:", error);
+
+      setSales(0);
+      setProfit(0);
+      setInventory(0);
+      setProductsCount(0);
+    }
+  }, []);
+
+  const formatMoney = (value: number) =>
+    new Intl.NumberFormat("ar-IQ").format(value);
+
   return (
     <main
       dir="rtl"
@@ -15,6 +92,7 @@ export default function OfferPage() {
             <div className="text-3xl font-black text-orange-400">
               SAMO
             </div>
+
             <div className="text-sm text-slate-400">
               Business AI
             </div>
@@ -24,6 +102,7 @@ export default function OfferPage() {
             <div className="text-lg font-bold text-orange-400">
               كوزمتك البسام
             </div>
+
             <div className="text-sm text-slate-400">
               نظام إدارة المبيعات والمخزون
             </div>
@@ -32,94 +111,98 @@ export default function OfferPage() {
       </header>
 
       {/* Hero */}
-      <section className="px-6 py-16 text-center">
+      <section className="px-6 py-14 text-center">
         <div className="mx-auto max-w-4xl">
           <div className="mb-4 text-lg font-bold text-orange-400">
             SAMO BUSINESS AI
           </div>
 
           <h1 className="text-4xl font-black leading-tight md:text-6xl">
-            حوّل إدارة مشروعك
-            <br />
-            إلى عمل ذكي
+            طبيب الأعمال الذكي
           </h1>
 
-          <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-400">
-            سجل مبيعاتك، تابع المخزون، واحسب أرباحك الحقيقية
-            بسهولة من مكان واحد.
+          <p className="mt-6 text-lg leading-8 text-slate-400">
+            سجل مبيعاتك، راقب المخزون، واعرف ربحك الحقيقي.
           </p>
-
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
-              href="/"
-              className="w-full rounded-2xl bg-orange-500 px-10 py-4 text-lg font-black text-white transition hover:bg-orange-400 sm:w-auto"
-            >
-              ابدأ استخدام SAMO
-            </Link>
-
-            <a
-              href="#features"
-              className="w-full rounded-2xl border border-white/15 bg-white/5 px-10 py-4 text-lg font-bold text-white sm:w-auto"
-            >
-              اكتشف المميزات
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="px-6 pb-16">
-        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-3">
-          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-7">
-            <div className="mb-4 text-4xl">💰</div>
-            <h2 className="mb-3 text-xl font-black">
-              متابعة المبيعات
-            </h2>
-            <p className="leading-7 text-slate-400">
-              سجل كل عملية بيع واعرف إجمالي مبيعاتك وأرباحك
-              بسهولة.
-            </p>
+      {/* Dashboard */}
+      <section className="px-6 pb-12">
+        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
+
+          {/* Sales */}
+          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-8">
+            <div className="text-lg text-slate-400">
+              إجمالي المبيعات
+            </div>
+
+            <div className="mt-4 text-4xl font-black">
+              {formatMoney(sales)}
+              <span className="mr-2 text-xl text-slate-400">
+                د.ع
+              </span>
+            </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-7">
-            <div className="mb-4 text-4xl">📦</div>
-            <h2 className="mb-3 text-xl font-black">
-              إدارة المخزون
-            </h2>
-            <p className="leading-7 text-slate-400">
-              تابع الكميات المتوفرة واعرف قيمة المخزون
-              الموجودة لديك.
-            </p>
+          {/* Profit */}
+          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-8">
+            <div className="text-lg text-slate-400">
+              إجمالي الأرباح
+            </div>
+
+            <div className="mt-4 text-4xl font-black text-emerald-400">
+              {formatMoney(profit)}
+              <span className="mr-2 text-xl text-slate-400">
+                د.ع
+              </span>
+            </div>
           </div>
 
-          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-7">
-            <div className="mb-4 text-4xl">📊</div>
-            <h2 className="mb-3 text-xl font-black">
-              معرفة الأرباح
-            </h2>
-            <p className="leading-7 text-slate-400">
-              احسب ربح كل منتج وإجمالي أرباح مشروعك بشكل واضح.
-            </p>
+          {/* Inventory */}
+          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-8">
+            <div className="text-lg text-slate-400">
+              قيمة المخزون
+            </div>
+
+            <div className="mt-4 text-4xl font-black">
+              {formatMoney(inventory)}
+              <span className="mr-2 text-xl text-slate-400">
+                د.ع
+              </span>
+            </div>
+          </div>
+
+          {/* Products */}
+          <div className="rounded-3xl border border-white/10 bg-[#0d2037] p-8">
+            <div className="text-lg text-slate-400">
+              عدد المنتجات
+            </div>
+
+            <div className="mt-4 text-4xl font-black">
+              {productsCount}
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
       <section className="px-6 pb-20">
-        <div className="mx-auto max-w-4xl rounded-3xl border border-orange-400/20 bg-[#0d2037] p-10 text-center">
+        <div className="mx-auto max-w-5xl rounded-3xl border border-orange-400/20 bg-[#0d2037] p-8 text-center">
+
           <h2 className="text-3xl font-black">
-            جاهز لإدارة مشروعك بطريقة أذكى؟
+            إدارة مشروعك أصبحت أسهل
           </h2>
 
           <p className="mt-4 text-slate-400">
-            ابدأ الآن وسجل أول عملية بيع.
+            ارجع إلى لوحة التحكم لتسجيل المبيعات وإدارة المخزون.
           </p>
 
           <Link
             href="/"
-            className="mt-7 inline-block rounded-2xl bg-emerald-500 px-12 py-4 text-lg font-black text-white transition hover:bg-emerald-400"
+            className="mt-7 inline-block rounded-2xl bg-orange-500 px-12 py-4 text-lg font-black transition hover:bg-orange-400"
           >
-            الدخول إلى النظام
+            العودة إلى SAMO
           </Link>
         </div>
       </section>
