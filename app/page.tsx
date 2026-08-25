@@ -211,7 +211,38 @@ export default function Home() {
       className="min-h-screen bg-[#071525] text-white"
     >
       <header className="border-b border-white/10 bg-[#0a1b2f]">
-        <div className="mx-auto max-w-6xl px-5 py-6 flex items-center justify-between">
+      <section className="mx-auto max-w-5xl px-5 py-10">
+  <div className="rounded-3xl border border-orange-400/30 bg-[#111f35] p-8 text-center shadow-xl">
+    <div className="mb-3 text-3xl font-bold text-orange-400">
+      SAMO Business AI
+    </div>
+
+    <h2 className="mb-3 text-3xl font-bold text-white">
+      نظام إدارة المبيعات والمخزون
+    </h2>
+
+    <p className="mb-6 text-lg text-slate-300">
+      احصل على البرنامج وابدأ بإدارة مبيعاتك ومخزونك بسهولة.
+    </p>
+
+    <div className="mb-6 text-4xl font-bold text-white">
+      $25
+    </div>
+
+    <a
+      href="https://wa.me/9647805826472?text=مرحباً،%20أريد%20شراء%20SAMO%20Business%20AI%20بسعر%2025%20دولار"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block w-full rounded-2xl bg-orange-500 px-8 py-5 text-xl font-bold text-white transition hover:bg-orange-600"
+    >
+      🛒 شراء البرنامج الآن — $25
+    </a>
+
+    <p className="mt-4 text-sm text-slate-400">
+      اضغط الزر للتواصل وإتمام عملية الشراء.
+    </p>
+  </div>
+</section>  <div className="mx-auto max-w-6xl px-5 py-6 flex items-center justify-between">
           <div>
             <div className="text-3xl font-black text-orange-400">
               SAMO
